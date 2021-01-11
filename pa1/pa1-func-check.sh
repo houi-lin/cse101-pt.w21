@@ -53,7 +53,7 @@ echo "Press Enter To Continue with Valgrind Results for Lex"
 read garbage
 
 for NUM in $(seq 1 $NUMTESTS); do
-   echo "Lex Valgrind Test $NUM:"
+   echo "Lex Valgrind Test $NUM: (press enter)"
    read garbage
    echo "=========="
    cat valgrind-out$NUM.txt
