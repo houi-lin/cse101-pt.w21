@@ -23,9 +23,13 @@ echo ""
 gcc -c -std=c11 -Wall -g ModelListTest.c List.c
 gcc -o ModelListTest ModelListTest.o List.o
 
-timeout 5 valgrind --leak-check=full -v ./ModelListTest -v > ListTest-out.txt
+timeout 5 valgrind --leak-check=full -v ./ModelListTest -v > ListTest-out.txt &> ListTest-valgrind-out.txt
 
 cat ListTest-out.txt
 
-rm -f *.o ModelListTest* Lex
+echo "List Valgrind Test: (press enter)"
+read garbage
+cat ListTest-valgrind-out.txt
+
+rm -f *.o ModelListTest* Lex ListTest-out.txt ListTest-valgrind-out.txt
 
