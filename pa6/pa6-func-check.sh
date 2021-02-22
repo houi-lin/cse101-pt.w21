@@ -26,15 +26,15 @@ gcc -o Order Order.o Dictionary.o
 
 lextestspassed=$(expr 0)
 echo "Please be warned that the following tests discard all output to stdout while reserving stderr for valgrind output"
-echo "Order tests: If nothing between '=' signs, then test is passed"
 echo "Press enter to continue"
 read verbose
 for NUM in $(seq 1 $NUMTESTS); do
   rm -f outfile$NUM.txt
   timeout 15 valgrind --leak-check=full -v Order infile$NUM.txt outfile$NUM.txt &> valgrind-out$NUM.txt
   diff -bBwu outfile$NUM.txt model-outfile$NUM.txt &> diff$NUM.txt >> diff$NUM.txt
-  echo "Order Test $NUM:"
+  echo "Order Test $NUM: (Press enter to continue...)"
   echo "Please check the diff# files manually if you fail the cases"
+  read verbose
   echo "=========="
   if [ -e diff$NUM.txt ] && [[ ! -s diff$NUM.txt ]]; then
     echo "PASS case"
@@ -59,7 +59,8 @@ echo "Press Enter To Continue with Valgrind Results for Order"
 read garbage
 
 for NUM in $(seq 1 $NUMTESTS); do
-   echo "Order Valgrind Test $NUM:"
+   echo "Order Valgrind Test $NUM: (Press enter to continue...)"
+   read verbose
    echo "=========="
    cat valgrind-out$NUM.txt
    echo "=========="
