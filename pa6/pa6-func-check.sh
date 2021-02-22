@@ -33,7 +33,7 @@ for NUM in $(seq 1 $NUMTESTS); do
   timeout 15 valgrind --leak-check=full -v Order infile$NUM.txt outfile$NUM.txt &> valgrind-out$NUM.txt
   diff -bBwu outfile$NUM.txt model-outfile$NUM.txt &> diff$NUM.txt >> diff$NUM.txt
   echo "Order Test $NUM: (Press enter to continue...)"
-  echo "Please check the diff# files manually if you fail the cases"
+  echo "Please check the diff$NUM.txt files manually if you fail the cases"
   read verbose
   echo "=========="
   if [ -e diff$NUM.txt ] && [[ ! -s diff$NUM.txt ]]; then
