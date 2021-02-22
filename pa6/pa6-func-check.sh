@@ -34,8 +34,13 @@ for NUM in $(seq 1 $NUMTESTS); do
   timeout 15 valgrind --leak-check=full -v Order infile$NUM.txt outfile$NUM.txt &> valgrind-out$NUM.txt
   diff -bBwu outfile$NUM.txt model-outfile$NUM.txt &> diff$NUM.txt >> diff$NUM.txt
   echo "Order Test $NUM:"
+  echo "Please check the diff# files manually if you fail the cases"
   echo "=========="
-  cat diff$NUM.txt
+  if [ -e diff$NUM.txt ] && [[ ! -s diff$NUM.txt ]]; then
+    echo "PASS case"
+  else
+    echo "FAIL"
+  fi
   echo "=========="
   if [ -e diff$NUM.txt ] && [[ ! -s diff$NUM.txt ]]; then
     let lextestspassed+=1
