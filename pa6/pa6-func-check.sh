@@ -68,5 +68,5 @@ done
 
 echo ""
 echo ""
-rm -f *.o Order diff* valgrind-out*
+rm -f *.o Order valgrind-out*
 
