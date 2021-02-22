@@ -24,7 +24,7 @@ echo ""
 gcc -c -std=c11 -Wall -g ModelDictionaryTest.c Dictionary.c
 gcc -o ModelDictionaryTest ModelDictionaryTest.o Dictionary.o
 
-timeout 5 valgrind --leak-check=full -v ./ModelDictionaryTest -v > DictionaryTest-out.txt 
+timeout 6 valgrind --leak-check=full -v ./ModelDictionaryTest -v > DictionaryTest-out.txt 
 
 cat DictionaryTest-out.txt 
 

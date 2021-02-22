@@ -49,4 +49,4 @@ echo "This gives a total of $lextestpoints / $MAXPTS points"
 echo ""
 echo ""
 
-rm -f *.o WordFrequency
+rm -f *.o WordFrequency WF-diff*

@@ -1,3 +1,24 @@
+******************************************************
+PRE-ORDER:
+******************************************************
+may appear in tests
+=====
+====
+===
+have to do is treat
+every line as a single string
+in accordance with
+sometimes tokens
+seriously all you
+out in the PDF
+so you better
+write your program
+the instructions set
+
+
+******************************************************
+IN-ORDER:
+******************************************************
 ===
 ====
 =====
@@ -11,3 +32,23 @@ so you better
 sometimes tokens
 the instructions set
 write your program
+
+
+******************************************************
+POST-ORDER:
+******************************************************
+===
+====
+every line as a single string
+in accordance with
+have to do is treat
+=====
+out in the PDF
+so you better
+seriously all you
+the instructions set
+write your program
+sometimes tokens
+may appear in tests
+
+

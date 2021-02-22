@@ -1,7 +1,7 @@
 # cse101-pt.w21/pa6
 
-The following is a set of performance tests to run on your Lex program. It
-takes five example input files and compares your results to our correct model
+The following is a set of performance tests to run on your Order program. It
+takes three example input files and compares your results to our correct model
 outputs. We have made this available to you to check your work before making
 your final submission.
 

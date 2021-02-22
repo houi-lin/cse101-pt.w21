@@ -9,7 +9,7 @@
 #include "Dictionary.h"
 
 #define FIRST_TEST Empty_size
-#define MAXSCORE 54
+#define MAXSCORE 45
 
 static uint8_t testsPassed;
 static volatile sig_atomic_t testStatus;
@@ -31,7 +31,7 @@ enum Test_e {
   Prev_value,
   Insert_value,
   Delete_value,
-  Loopup_value,
+  Loopup_value,  
 
   NonUnique_size,
   NonUnique_insert,
@@ -68,7 +68,7 @@ char *testName(int test) {
   return "";
 }
 
-uint8_t runTest(Dictionary *pA, Dictionary *pB, int test) {
+uint8_t runTest(Dictionary *pA, Dictionary *pB, int* pI, int test) {
   Dictionary A = *pA;
   Dictionary B = *pB;
   switch(test) {
@@ -79,23 +79,26 @@ uint8_t runTest(Dictionary *pA, Dictionary *pB, int test) {
       }
     case Insert_size:
       {
-        insert(A, "a", 1);
-        insert(A, "b", 2);
-        insert(A, "c", 3);
-        insert(A, "e", 5);
-        if (size(A) != 4) return 1;
+        insert(A, "a", &pI[8]);
+        insert(A, "b", &pI[8]);
+        insert(A, "c", &pI[8]);
+        insert(A, "d", &pI[8]);
+        insert(A, "e", &pI[8]);
+        if (size(A) != 5) return 1;
         return 0;
       }
     case Delete_size:
       {
-        insert(A, "c", 3);
-        insert(A, "a", 1);
-        insert(A, "b", 2);
+        insert(A, "a", &pI[8]);
+        insert(A, "b", &pI[8]);
+        insert(A, "c", &pI[8]);
+        insert(A, "d", &pI[8]);
+        insert(A, "e", &pI[8]);
         delete(A, "a");
-        if (size(A) != 2) return 1;
-        insert(A, "e", 5);
-        delete(A, "c");
-        if (size(A) != 2) return 2;
+        if (size(A) != 4) return 1;
+        insert(A, "f", &pI[8]);
+        delete(A, "e");
+        if (size(A) != 4) return 2;
         return 0;
       }
     case Empty_traverse:
@@ -114,9 +117,13 @@ uint8_t runTest(Dictionary *pA, Dictionary *pB, int test) {
       }
     case NonEmpty_makeEmpty:
       {
-        insert(A, "c", 3);
-        insert(A, "b", 2);
-        insert(A, "a", 1);
+        insert(A, "m", &pI[8]);
+        insert(A, "n", &pI[8]);
+        insert(A, "o", &pI[8]);
+        insert(A, "p", &pI[8]);
+        insert(A, "q", &pI[8]);
+        insert(A, "f", &pI[8]);
+        insert(A, "e", &pI[8]);
         beginForward(A);
         makeEmpty(A);
         if (currentKey(A) != KEY_UNDEF || currentVal(A) != VAL_UNDEF || size(A) != 0) return 1;
@@ -124,150 +131,204 @@ uint8_t runTest(Dictionary *pA, Dictionary *pB, int test) {
       }
     case BeginForward_value:
       {
-        insert(A, "d", 1);
-        insert(A, "b", 5);
-        insert(A, "c", 16);
-        insert(A, "f", 176);
-        insert(A, "e", 3214);
-        if (beginForward(A) != 5 || currentVal(A) != 5) return 1;
-        delete(A, "b");
-        if (beginForward(A) != 16 || currentVal(A) != 16) return 2;
+        insert(A, "m", &pI[8]);
+        insert(A, "n", &pI[8]);
+        insert(A, "o", &pI[8]);
+        insert(A, "p", &pI[8]);
+        insert(A, "q", &pI[8]);
+        insert(A, "f", &pI[0]);
+        insert(A, "e", &pI[1]);
+        if (*beginForward(A) != pI[1] || *currentVal(A) != pI[1]) return 1;
+        delete(A, "e");
+        if (*beginForward(A) != pI[0] || *currentVal(A) != pI[0]) return 2;
         return 0;
       }
     case BeginReverse_value:
       {
-        insert(A, "d", 1);
-        insert(A, "b", 5);
-        insert(A, "c", 16);
-        insert(A, "f", 176);
-        insert(A, "e", 3214);
-        if (beginReverse(A) != 176 || currentVal(A) != 176) return 1;
-        delete(A, "f");
-        if (beginReverse(A) != 3214 || currentVal(A) != 3214) return 1;
+        insert(A, "m", &pI[8]);
+        insert(A, "n", &pI[8]);
+        insert(A, "o", &pI[8]);
+        insert(A, "p", &pI[0]);
+        insert(A, "q", &pI[1]);
+        insert(A, "f", &pI[8]);
+        insert(A, "e", &pI[8]);
+        if (*beginReverse(A) != pI[1] || *currentVal(A) != pI[1]) return 1;
+        delete(A, "q");
+        if (*beginReverse(A) != pI[0] || *currentVal(A) != pI[0]) return 1;
         return 0;
       }
     case Next_value:
       {
-        insert(A, "a", 1);
-        insert(A, "b", 5);
-        insert(A, "c", 16);
-        insert(A, "d", 176);
-        insert(A, "e", 3214);
+        insert(A, "m", &pI[0]);
+        insert(A, "n", &pI[1]);
+        insert(A, "o", &pI[2]);
+        insert(A, "p", &pI[3]);
+        insert(A, "q", &pI[4]);
+        insert(A, "f", &pI[5]);
+        insert(A, "e", &pI[6]);
         beginForward(A);
         next(A);
         next(A);
-        if (strcmp(currentKey(A), "c") != 0 || currentVal(A) != 16) return 1;
+        if (strcmp(currentKey(A), "m") != 0 || *currentVal(A) != pI[0]) return 1;
+        next(A);
+        next(A);
+        if (strcmp(currentKey(A), "o") != 0 || *currentVal(A) != pI[2]) return 2;
         next(A);
         next(A);
         next(A);
-        if (currentKey(A) != KEY_UNDEF || currentVal(A) != VAL_UNDEF) return 2;
+        if (currentKey(A) != KEY_UNDEF || currentVal(A) != VAL_UNDEF) return 3;
         return 0;
       }
     case Prev_value:
       {
-        insert(A, "a", 1);
-        insert(A, "b", 5);
-        insert(A, "e", 3214);
+        insert(A, "m", &pI[0]);
+        insert(A, "n", &pI[1]);
+        insert(A, "o", &pI[2]);
+        insert(A, "p", &pI[3]);
+        insert(A, "q", &pI[4]);
+        insert(A, "f", &pI[5]);
+        insert(A, "e", &pI[6]);
         beginReverse(A);
         prev(A);
-        if (strcmp(currentKey(A), "b") != 0 || currentVal(A) != 5) return 1;
+        prev(A);
+        if (strcmp(currentKey(A), "o") != 0 || *currentVal(A) != pI[2]) return 1;
         prev(A);
         prev(A);
-        if (currentKey(A) != KEY_UNDEF || currentVal(A) != VAL_UNDEF) return 2;
+        if (strcmp(currentKey(A), "m") != 0 || *currentVal(A) != pI[0]) return 2;
+        prev(A);
+        prev(A);
+        prev(A);
+        if (currentKey(A) != KEY_UNDEF || currentVal(A) != VAL_UNDEF) return 3;
         return 0;
       }
     case Insert_value:
       {
-        insert(A, "a", 1);
-        insert(A, "b", 5);
-        insert(A, "e", 10);
+        insert(A, "m", &pI[0]);
+        insert(A, "n", &pI[1]);
+        insert(A, "o", &pI[2]);
         beginReverse(A);
-        insert(A, "h", 15);
-        insert(A, "f", 20);
-        insert(A, "i", 100);
-        if (strcmp(currentKey(A), "e") != 0 || currentVal(A) != 10) return 1;
-        beginReverse(A);
-        prev(A);
-        prev(A);
-        if (strcmp(currentKey(A), "f") != 0 || currentVal(A) != 20) return 2;
+        insert(A, "p", &pI[3]);
+        insert(A, "q", &pI[4]);
+        insert(A, "f", &pI[5]);
+        insert(A, "e", &pI[6]);
+        if (strcmp(currentKey(A), "o") != 0 || *currentVal(A) != pI[2]) return 1;
+        beginForward(A);
+        if (strcmp(currentKey(A), "e") != 0 || *currentVal(A) != pI[6]) return 2;
         return 0;
       }
     case Delete_value:
       {
-        insert(A, "d", 1);
-        insert(A, "b", 5);
-        insert(A, "a", 10);
-        insert(A, "c", 15);
-        insert(A, "f", 20);
-        insert(A, "e", 25);
-        insert(A, "g", 30);
+        insert(A, "m", &pI[0]);
+        insert(A, "n", &pI[1]);
+        insert(A, "o", &pI[2]);
+        insert(A, "p", &pI[3]);
+        insert(A, "q", &pI[4]);
+        insert(A, "f", &pI[5]);
+        insert(A, "e", &pI[6]);
         beginForward(A);
-        delete(A, "a");
+        delete(A, "e");
         if (currentKey(A) != KEY_UNDEF || currentVal(A) != VAL_UNDEF) return 1;
+        insert(A, "e", &pI[6]);
+        delete(A, "f");
+        beginForward(A);
+        if (strcmp(currentKey(A), "e") != 0 || *currentVal(A) != pI[6]) return 2;
+        insert(A, "f", &pI[5]);
+        delete(A, "n");
         beginReverse(A);
-        delete(A, "d");
-        if (strcmp(currentKey(A), "g") != 0 || currentVal(A) != 30) return 2;
+        if (strcmp(currentKey(A), "q") != 0 || *currentVal(A) != pI[4]) return 2;
         return 0;
       }
     case Loopup_value:
       {
         if (lookup(A, "f") != VAL_UNDEF) return 1;
-        insert(A, "a", 1);
-        insert(A, "b", 5);
-        insert(A, "e", 10);
-        insert(A, "h", 15);
-        insert(A, "f", 20);
-        insert(A, "i", 100);
-        if (lookup(A, "f") != 20) return 2;
-        delete(A, "f");
-        if (lookup(A, "f") != VAL_UNDEF) return 3;
+        insert(A, "m", &pI[0]);
+        insert(A, "n", &pI[1]);
+        insert(A, "o", &pI[2]);
+        insert(A, "p", &pI[3]);
+        insert(A, "q", &pI[4]);
+        insert(A, "f", &pI[5]);
+        insert(A, "e", &pI[6]);
+        if (*lookup(A, "m") != pI[0]) return 2;
+        delete(A, "n");
+        if (lookup(A, "n") != VAL_UNDEF) return 3;
+        if (*lookup(A, "q") != pI[4]) return 3;
         return 0;
       }
     case NonUnique_size:
       {
-        insert(B, "d", 2);
-        insert(B, "d", 5);
-        insert(B, "d", 1);
-        if (size(B) != 3) return 1;
+        insert(B, "d", &pI[0]);
+        insert(B, "d", &pI[1]);
+        insert(B, "d", &pI[2]);
+        insert(B, "d", &pI[3]);
+        insert(B, "d", &pI[4]);
+        if (size(B) != 5) return 1;
         delete(B, "d");
-        if (size(B) != 2) return 2;
+        if (size(B) != 4) return 2;
         return 0;
       }
     case NonUnique_insert:
       {
-        insert(B, "d", 2);
-        insert(B, "d", 5);
-        if (lookup(B, "d") != 2) return 1;
-        insert(B, "d", 1);
-        if (lookup(B, "d") != 2) return 2;
+        insert(B, "d", &pI[0]);
+        insert(B, "d", &pI[1]);
+        if (*lookup(B, "d") != pI[0]) return 1;
+        insert(B, "d", &pI[2]);
+        if (*lookup(B, "d") != pI[1]) return 2;
+        insert(B, "d", &pI[3]);
+        insert(B, "d", &pI[4]);
+        insert(B, "d", &pI[5]);
+        insert(B, "d", &pI[6]);
+        insert(B, "d", &pI[7]);
+        if (*lookup(B, "d") != pI[3]) return 2;
         return 0;
       }
     case NonUnique_delete:
       {
-        insert(B, "d", 2);
-        insert(B, "d", 5);
+        insert(B, "d", &pI[0]);
+        insert(B, "d", &pI[1]);
+        insert(B, "d", &pI[2]);
+        insert(B, "d", &pI[3]);
+        insert(B, "d", &pI[4]);
+        insert(B, "d", &pI[5]);
+        insert(B, "d", &pI[6]);
+        insert(B, "d", &pI[7]);
         delete(B, "d");
-        if (lookup(B, "d") != 5) return 1;
+        if (*lookup(B, "d") != pI[4]) return 1;
+        delete(B, "d");
+        if (*lookup(B, "d") != pI[5]) return 1;
         return 0;
       }
     case NonUnique_beginForward:
       {
-        insert(B, "d", 2);
-        insert(B, "d", 5);
-        insert(B, "d", 1);
-        if (beginForward(B) != 2) return 1;
+        insert(B, "d", &pI[0]);
+        insert(B, "d", &pI[1]);
+        insert(B, "d", &pI[2]);
+        insert(B, "d", &pI[3]);
+        insert(B, "d", &pI[4]);
+        insert(B, "d", &pI[5]);
+        insert(B, "d", &pI[6]);
+        insert(B, "d", &pI[7]);
+        if (*beginForward(B) != pI[0] && *currentVal(B) != pI[0]) return 1;
         next(B);
-        if (currentVal(B) != 5) return 2;
+        next(B);
+        next(B);
+        if (*next(B) != pI[4] && *currentVal(B) != pI[4]) return 2;
         return 0;
       }
     case NonUnique_beginReverse:
       {
-        insert(B, "d", 2);
-        insert(B, "d", 5);
-        insert(B, "d", 1);
-        if (beginReverse(B) != 1) return 1;
+        insert(B, "d", &pI[0]);
+        insert(B, "d", &pI[1]);
+        insert(B, "d", &pI[2]);
+        insert(B, "d", &pI[3]);
+        insert(B, "d", &pI[4]);
+        insert(B, "d", &pI[5]);
+        insert(B, "d", &pI[6]);
+        insert(B, "d", &pI[7]);
+        if (*beginReverse(B) != pI[7] && *currentVal(B) != pI[7]) return 1;
         prev(B);
-        if (currentVal(B) != 5) return 2;
+        prev(B);
+        prev(B);
+        if (*prev(B) != pI[3] && *currentVal(B) != pI[3]) return 2;
         return 0;
       }
   }
@@ -310,9 +371,12 @@ int main (int argc, char **argv) {
   for (uint8_t i = FIRST_TEST; i < NUM_TESTS; i++) {
     Dictionary A = newDictionary(1);
     Dictionary B = newDictionary(0);
-    testStatus = runTest(&A, &B, i);
+    int* pInt = calloc(10, sizeof(int));
+    for (int i=0; i < 10; i++) pInt[i]=i+10;
+    testStatus = runTest(&A, &B, pInt, i);
     freeDictionary(&A);
     freeDictionary(&B);
+    free(pInt);
     uint8_t fail_type = setjmp(test_crash);
     if (argc == 2) { // it's verbose mode
       printf("Test %s: %s", testName(i), testStatus == 0 ? "PASSED" :
@@ -335,7 +399,7 @@ int main (int argc, char **argv) {
 
   disable_exit_handler = 1;
 
-  uint8_t totalScore = testsPassed*3;
+  uint8_t totalScore = (testsPassed/2) * 5 + (testsPassed%2) * 3;
 
   if (argc == 2 && testStatus != 255) printf("\nYou passed %d out of %d tests\n", testsPassed,
       NUM_TESTS);
@@ -343,7 +407,7 @@ int main (int argc, char **argv) {
     totalScore = 10; // charity points
     if (argc == 2) printf("Receiving charity points because your program crashes\n");
   }
-  printf("\nYou will receive %d out of %d possible points on the ListTests\n\n",
+  printf("\nYou will receive %d out of %d possible points on the Dictionary Unit Test\n\n",
       totalScore, MAXSCORE);
   exit(0);
   return 0;

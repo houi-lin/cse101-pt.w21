@@ -15,26 +15,25 @@ cp *.c *.h Makefile backup   # copy all files of importance into backup
 
 for NUM in $(seq 1 $NUMTESTS); do
    curl $SRCDIR/infile$NUM.txt > infile$NUM.txt
-   curl $SRCDIR/model-outfile$NUM.txt > model-outfile$NUM.txt
+   curl $SRCDIR/Model-outfile$NUM.txt > model-outfile$NUM.txt
 done
 
 echo ""
 echo ""
 
-gcc -c -std=c11 -Wall -g Lex.c Dictionary.c
-gcc -o Lex Lex.o Dictionary.o
+gcc -c -std=c11 -Wall -g Order.c Dictionary.c
+gcc -o Order Order.o Dictionary.o
 
 lextestspassed=$(expr 0)
 echo "Please be warned that the following tests discard all output to stdout while reserving stderr for valgrind output"
-echo "Lex tests: If nothing between '=' signs, then test is passed"
+echo "Order tests: If nothing between '=' signs, then test is passed"
 echo "Press enter to continue"
 read verbose
 for NUM in $(seq 1 $NUMTESTS); do
   rm -f outfile$NUM.txt
-  timeout 10 valgrind --leak-check=full -v Lex infile$NUM.txt outfile$NUM.txt &> valgrind-out$NUM.txt
+  timeout 15 valgrind --leak-check=full -v Order infile$NUM.txt outfile$NUM.txt &> valgrind-out$NUM.txt
   diff -bBwu outfile$NUM.txt model-outfile$NUM.txt &> diff$NUM.txt >> diff$NUM.txt
-  echo "Lex Test $NUM: (Press enter to continue...)"
-  read verbose
+  echo "Order Test $NUM:"
   echo "=========="
   cat diff$NUM.txt
   echo "=========="
@@ -45,18 +44,17 @@ done
 
 let lextestpoints=${PNTSPERTEST}*lextestspassed
 
-echo "Passed $lextestspassed / $NUMTESTS Lex tests"
+echo "Passed $lextestspassed / $NUMTESTS Order tests"
 echo "This gives a total of $lextestpoints / $MAXPTS points"
 echo ""
 echo ""
 
-echo "Press Enter To Continue with Valgrind Results for Lex"
+echo "Press Enter To Continue with Valgrind Results for Order"
 #TODO find a way to automate detecting if leaks and errors are found and how many
 read garbage
 
 for NUM in $(seq 1 $NUMTESTS); do
-   echo "Lex Valgrind Test $NUM: (Press enter to continue...)"
-   read verbose
+   echo "Order Valgrind Test $NUM:"
    echo "=========="
    cat valgrind-out$NUM.txt
    echo "=========="
@@ -64,5 +62,5 @@ done
 
 echo ""
 echo ""
-rm -f *.o Lex
+rm -f *.o Order diff* valgrind-out*
 
