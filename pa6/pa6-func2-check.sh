@@ -31,7 +31,7 @@ echo "Press enter to continue"
 read verbose
 for NUM in $(seq 1 $NUMTESTS); do
   rm -f WF-outfile$NUM.txt
-  timeout 6 WordFrequency WF-infile$NUM.txt WF-outfile$NUM.txt
+  timeout 10 WordFrequency WF-infile$NUM.txt WF-outfile$NUM.txt
   diff -bBwu WF-outfile$NUM.txt Model-WF-outfile$NUM.txt &> WF-diff$NUM.txt >> WF-diff$NUM.txt
   echo "WordFrequency Test $NUM:"
   echo "=========="
