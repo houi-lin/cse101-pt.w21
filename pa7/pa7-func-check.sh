@@ -4,7 +4,7 @@ SRCDIR=https://raw.githubusercontent.com/houi-lin/cse101-pt.w21/master/pa7
 NUMTESTS=5
 PNTSPERTEST=4
 let MAXPTS=$NUMTESTS*$PNTSPERTEST
-TIME=15
+TIME=30
 
 if [ ! -e backup ]; then
   mkdir backup
